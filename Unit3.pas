@@ -1,9 +1,19 @@
 unit Unit3;
 
+{$IFDEF FPC}
+  {$MODE Delphi}
+{$ENDIF}
+
 interface
 
-uses Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
-  Buttons, ComCtrls, ExtCtrls, RXSpin, Mask, ToolEdit, IniFiles, Dialogs;
+uses
+{$IFNDEF FPC}
+  Mask, Windows,
+{$ELSE}
+  MaskEdit, LCLIntf, LCLType, LMessages, EditBtn,
+{$ENDIF}
+  SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
+  Buttons, ComCtrls, ExtCtrls, RXSpin, ToolEdit, IniFiles, Dialogs;
 
 type
   TSetDia = class(TForm)
@@ -39,7 +49,7 @@ implementation
 
 uses BlindMain, Unit2;
 
-{$R *.DFM}
+{$R *.dfm}
 
 function CanCreateFile(FilePath: String): Boolean;
 var

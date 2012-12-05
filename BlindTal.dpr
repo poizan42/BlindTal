@@ -1,6 +1,14 @@
 program BlindTal;
 
+{$IFDEF FPC}
+  {$MODE Delphi}
+{$ENDIF}
+
 uses
+{$IFNDEF FPC}
+{$ELSE}
+  Interfaces,
+{$ENDIF}
   Forms,
   BlindMain in 'BlindMain.pas' {Form1},
   Unit1 in 'Unit1.pas' {AboutBox},
@@ -8,7 +16,7 @@ uses
   Unit3 in 'Unit3.pas' {SetDia},
   Unit4 in 'Unit4.pas' {Form4};
 
-{$R *.RES}
+{$R *.res}
 
 begin
   Application.Initialize;

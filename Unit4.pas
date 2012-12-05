@@ -1,9 +1,18 @@
 unit Unit4;
 
+{$IFDEF FPC}
+  {$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  SysUtils, Windows, Messages, Classes, Graphics, Controls,
+{$IFNDEF FPC}
+  Windows,
+{$ELSE}
+  LCLIntf, LCLType, LMessages,
+{$ENDIF}
+  SysUtils, Messages, Classes, Graphics, Controls,
   StdCtrls, ExtCtrls, Forms, BlindMain, Dialogs, ComCtrls;
 
 type
@@ -34,14 +43,14 @@ var
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 function CompareAlpha(Str1, Str2: String; Reverse: Boolean): Integer;
 begin
  if not Reverse then
-  Result := lstrcmp(PChar(Str1), PChar(Str2))
+  Result := strcomp(PChar(Str1), PChar(Str2))
  else
-  Result := lstrcmp(PChar(Str2), PChar(Str1));
+  Result := strcomp(PChar(Str2), PChar(Str1));
 end;
 
 procedure TForm4.Button2Click(Sender: TObject);

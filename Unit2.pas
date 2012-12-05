@@ -1,8 +1,18 @@
 unit Unit2;
 
+{$IFDEF FPC}
+  {$MODE Delphi}
+{$ENDIF}
+
 interface
 
-uses Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls, 
+uses
+{$IFNDEF FPC}
+  Windows,
+{$ELSE}
+  LCLIntf, LCLType, LMessages,
+{$ENDIF}
+  SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
   Buttons, ExtCtrls;
 
 type
@@ -35,7 +45,7 @@ implementation
 
 uses BlindMain;
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TStatDia.FormClose(Sender: TObject; var Action: TCloseAction);
 begin

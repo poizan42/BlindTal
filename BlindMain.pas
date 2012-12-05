@@ -3,9 +3,17 @@ unit BlindMain;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  RXCtrls, ExtCtrls, StdCtrls, Math, Menus, RxMenus, Buttons, Unit1, RXSwitch,
-  RxGrdCpt, RxCombos, Unit2, IniFiles, Placemnt;
+{$IFNDEF FPC}
+
+{$ELSE}
+  LCLIntf, LCLType, LMessages,
+{$ENDIF}
+{$IFDEF WINDOWS}
+  Windows,
+{$ENDIF}
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ExtCtrls, StdCtrls, Math, Menus, Buttons, Unit1,
+  Unit2, IniFiles{, Placemnt};
 
 type
   TPoints = record
@@ -34,8 +42,8 @@ type
     Btn3: TSpeedButton;
     ComBtn: TSpeedButton;
     Edit1: TEdit;
-    RxLabel1: TRxLabel;
-    RxMainMenu1: TRxMainMenu;
+    RxLabel1: TLabel;
+    RxMainMenu1: TMainMenu;
     Filer1: TMenuItem;
     Start1: TMenuItem;
     N1: TMenuItem;
@@ -53,12 +61,11 @@ type
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
-    RxLabel2: TRxLabel;
+    RxLabel2: TLabel;
     SpeedButton3: TSpeedButton;
     Label8: TLabel;
     Status1: TMenuItem;
     Score1: TMenuItem;
-    FormStorage1: TFormStorage;
     procedure Luk1Click(Sender: TObject);
     procedure Start1Click(Sender: TObject);
     procedure Edit1KeyPress(Sender: TObject; var Key: Char);
@@ -149,14 +156,17 @@ Procedure WritePointsToFile(Fil, Navn: String; Tid: TTime; Fejl,
  Opgaver: Integer); overload;
 begin
  with TIniFile.Create(Fil) do begin
- if ((Tid / Opgaver) * ReadInteger(Navn, 'Opgaver', 0))
- {-}<= ReadTime(Navn, 'Tid', 0) then
- begin
-  WriteTime(Navn, 'Tid', Tid);
-  WriteInteger(Navn, 'Fejl', Fejl);
-  WriteInteger(Navn, 'Opgaver', Opgaver);
- end;
-  Free;
+  try
+   if ((Tid / Opgaver) * ReadInteger(Navn, 'Opgaver', 0))
+   {-}<= ReadTime(Navn, 'Tid', 0) then
+   begin
+    WriteTime(Navn, 'Tid', Tid);
+    WriteInteger(Navn, 'Fejl', Fejl);
+    WriteInteger(Navn, 'Opgaver', Opgaver);
+   end;
+  finally
+   Free;
+  end;
  end;
 end;
 
@@ -184,7 +194,8 @@ end;
 
 procedure TForm1.NextNumber;
 var
- X, Y, Z1, Z2: Variant;
+ Y : integer;
+ Z1, Z2: string;
  I, I1, I2: integer;
  S1: String;
 begin
@@ -195,9 +206,8 @@ begin
  Z2 := '';
  Z1 := '';
  Randomize;
- if acNeg in AllowChars then begin // Skal tallet være
-  X := Random(2);                  // negativt?
-  if X then begin
+ if acNeg in AllowChars then begin // Skal tallet vÃ¦re
+  if Random >= 0.5 then begin      // negativt?
    Dec(Y);
    Z1 := '-';
   end;
@@ -207,6 +217,7 @@ begin
   Dec(Y);
  end;
 
+ S1 := '';
  for I := 1 to Y do begin
   if (acMat in AllowChars) or (acDec in AllowChars) then
    I2 := Random(11)
@@ -266,7 +277,11 @@ begin
   else if OldValue+Key = RxLabel1.Caption then
    NextNumber
   else begin
-   messagebeep(MB_ICONEXCLAMATION);
+   {$IFDEF WINDOWS}
+   MessageBeep(MB_ICONEXCLAMATION);
+   {$ELSE}
+   Beep;
+   {$ENDIF}
    StatDia.FejlLabel.Caption := IntToStr(StrToInt(StatDia.FejlLabel.Caption)+1)
   end;
   Tid := NewTime-OldTime;
@@ -281,8 +296,13 @@ begin
 end;
 
 procedure TForm1.Stop1Click(Sender: TObject);
+var
+ name: string;
 begin
- WritePointsToFile(PointFile, InputBox('Navn', 'Skriv venligst dit navn:', ''),
+ name := InputBox('Navn', 'Skriv venligst dit navn:', '');
+ if (name = '') then
+  Exit;
+ WritePointsToFile(PointFile, name,
  {-}StrToTime(StatDia.TidLabel.Caption),
  {-}StrToInt(StatDia.FejlLabel.Caption),
  {-}StrToInt(StatDia.OpgLabel.Caption));
@@ -338,7 +358,6 @@ begin
   CloseFile(TXT);
  end else
   IniPath := ExtractFilePath(Application.ExeName)+'BlindTal.ini';
- FormStorage1.IniFileName := IniPath;
  MaxValue := 4;
  AllowChars := [];
  with TIniFile.Create(IniPath) do

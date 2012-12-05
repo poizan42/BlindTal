@@ -7,3 +7,8 @@
 *.dcu
 *.exe
 /Save.bts
+*.o
+/*.ppu
+*.lps
+*.or
+*.compiled

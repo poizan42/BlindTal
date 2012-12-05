@@ -1,8 +1,18 @@
 unit Unit1;
 
+{$IFDEF FPC}
+  {$MODE Delphi}
+{$ENDIF}
+
 interface
 
-uses Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
+uses
+{$IFNDEF FPC}
+  Windows,
+{$ELSE}
+  LCLIntf, LCLType, LMessages,
+{$ENDIF}
+  SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
   Buttons, ExtCtrls;
 
 type
@@ -28,7 +38,7 @@ implementation
 
 uses BlindMain;
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TAboutBox.FormKeyPress(Sender: TObject; var Key: Char);
 begin
