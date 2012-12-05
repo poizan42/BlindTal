@@ -1,0 +1,9 @@
+*.~dpr
+*.~dp
+*.~pas
+*.~pa
+*.~dfm
+*.~df
+*.dcu
+*.exe
+/Save.bts
