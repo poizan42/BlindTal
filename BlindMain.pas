@@ -111,7 +111,7 @@ implementation
 
 uses Unit3, Unit4;
 
-{$R *.DFM}
+{$R *.dfm}
 
 function ReadStr(var Txt: Text): string;
 begin
