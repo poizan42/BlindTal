@@ -1,3 +1,5 @@
 BlindTal - touch typing on numeric keypads trainer
 
 Copyright (C) 2001, 2012 Kasper F. Brandt
+
+Requires rxlib or RXfpc
